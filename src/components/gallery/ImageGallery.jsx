@@ -3,7 +3,7 @@ import { ImageGalleryStyle } from './ImageGallery.style';
 import { ImageGalleryItemStyle, ImageItem } from './ImageGalleryItem.style';
 import { Modal } from 'antd';
 
-export const ImageGallery = ({ images, openModals }) => {
+export const ImageGallery = ({ images, openModals, toggleModal }) => {
   return (
     <ImageGalleryStyle>
       {images.map(e => (
@@ -11,12 +11,12 @@ export const ImageGallery = ({ images, openModals }) => {
           <ImageItem
             src={e.webformatURL}
             alt={e.tags}
-            onClick={() => this.toggleModal(e.id)}
+            onClick={() => toggleModal(e.id)}
           />
           <Modal
             width="1200px"
             open={openModals[e.id]}
-            onCancel={() => this.toggleModal(e.id)}
+            onCancel={() => toggleModal(e.id)}
             footer={null}
             centered={true}
             closable={false}
