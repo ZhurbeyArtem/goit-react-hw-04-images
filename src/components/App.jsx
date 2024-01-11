@@ -1,9 +1,11 @@
+import { useCallback, useEffect, useState } from 'react';
+
 import Header from './header/Header';
 import { getImages } from 'api/api';
 import { Btn } from './Button.style';
 import { Loader } from './loader/Loader';
 import { ImageGallery } from './gallery/ImageGallery';
-import { useCallback, useEffect, useState } from 'react';
+
 export const App = () => {
   const [images, setImages] = useState([]);
   const [filter, setFilter] = useState('');
@@ -12,27 +14,27 @@ export const App = () => {
   const [openModals, setOpenModals] = useState({});
   const [showBtn, setShowBtn] = useState(false);
 
- const getData = useCallback(async () => {
-   try {
-     setIsLoad(true);
-     const { data } = await getImages(page, filter);
-     if (data) {
-       setImages(prevImages => {
-         const uniqueNewImages = data.hits.filter(
-           newImage =>
-             !prevImages.some(prevImage => prevImage.id === newImage.id)
-         );
-         return [...prevImages, ...uniqueNewImages];
-       });
-       setIsLoad(false);
-       setShowBtn(page < Math.ceil(data.totalHits / 12));
-     }
-   } catch (e) {
-     setIsLoad(false);
-     setShowBtn(false);
-     alert(e);
-   }
- }, [page, filter]);
+  const getData = useCallback(async () => {
+    try {
+      setIsLoad(true);
+      const { data } = await getImages(page, filter);
+      if (data) {
+        setImages(prevImages => {
+          const uniqueNewImages = data.hits.filter(
+            newImage =>
+              !prevImages.some(prevImage => prevImage.id === newImage.id)
+          );
+          return [...prevImages, ...uniqueNewImages];
+        });
+        setIsLoad(false);
+        setShowBtn(page < Math.ceil(data.totalHits / 12));
+      }
+    } catch (e) {
+      setIsLoad(false);
+      setShowBtn(false);
+      alert(e);
+    }
+  }, [page, filter]);
 
   const findImages = word => {
     setFilter(word);
