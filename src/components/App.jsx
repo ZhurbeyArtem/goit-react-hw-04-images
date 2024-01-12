@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Header from './header/Header';
 import { getImages } from 'api/api';
@@ -14,37 +14,38 @@ export const App = () => {
   const [openModals, setOpenModals] = useState({});
   const [showBtn, setShowBtn] = useState(false);
 
-  const getData = useCallback(async () => {
-    try {
-      setIsLoad(true);
-      const { data } = await getImages(page, filter);
-      if (data) {
-        setImages(prevImages => {
-          const uniqueNewImages = data.hits.filter(
-            newImage =>
-              !prevImages.some(prevImage => prevImage.id === newImage.id)
-          );
-          return [...prevImages, ...uniqueNewImages];
-        });
-        setIsLoad(false);
-        setShowBtn(page < Math.ceil(data.totalHits / 12));
-      }
-    } catch (e) {
-      setIsLoad(false);
-      setShowBtn(false);
-      alert(e);
-    }
+  useEffect(() => {
+    if (!filter) return;
+     const getData = async () => {
+       try {
+         setIsLoad(true);
+         const { data } = await getImages(page, filter);
+         if (data) {
+           setImages(prevImages => {
+             const uniqueNewImages = data.hits.filter(
+               newImage =>
+                 !prevImages.some(prevImage => prevImage.id === newImage.id)
+             );
+             return [...prevImages, ...uniqueNewImages];
+           });
+           setIsLoad(false);
+           setShowBtn(page < Math.ceil(data.totalHits / 12));
+         }
+       } catch (e) {
+         setIsLoad(false);
+         setShowBtn(false);
+         alert(e);
+       }
+     };
+    getData();
   }, [page, filter]);
+
 
   const findImages = word => {
     setFilter(word);
     setImages([]);
     setPage(1);
   };
-
-  useEffect(() => {
-    getData();
-  }, [getData, page, filter]);
 
   const toggleModal = id => {
     setOpenModals(prevState => ({
